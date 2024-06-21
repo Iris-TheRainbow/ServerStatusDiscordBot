@@ -1,8 +1,7 @@
 from discord.ext import commands, tasks
 import discord
-
+import systeminfo
 import apikey
-import psutil
 import time
 import asyncio
 
@@ -45,12 +44,12 @@ async def on_message(message):
         return
 
     if message.content == "status":
-        usage = str(psutil.cpu_percent(.25))
-        freq = str(psutil.cpu_freq()[0])
-        memPercent = str(psutil.virtual_memory()[2])
-        with open('/proc/uptime', 'r') as f:
-            uptime = str(float(f.readline().split()[0])/86400)
-        await message.channel.send('CPU freq: ' + freq + '\n CPU usage: ' + usage + '\n RAM%: ' + memPercent + '\n Uptime: ' + uptime)
+        await message.channel.send('CPU freq: ' + systeminfo.getCPUFreq() + '\nCPU usage: ' + systeminfo.getCPUUsage() + '\nRAM%: ' + systeminfo.getRAMUsage() + '\nUptime: ' + systeminfo.getUptime_Days())
+        statuses = systeminfo.getStatus(["sshd", "tailscaled", "fwupd"])
+        statusString = ''
+        for status in statuses:
+            statusString = statusString + "\n" + status
+        await message.channel.send(statusString)
     if message.content == "bot status":
         f = open("uptime", "r")
         startTime = f.readline()
@@ -60,7 +59,7 @@ async def on_message(message):
         if uptime > 60: 
             uptime = uptime / 60
             suffix = "hours"
-        elif uptime > 1440:
+        if uptime > 1440:
             uptime = uptime / 1440
             suffix = 'days'
         await message.channel.send('Bot has been up for: ' + str(uptime)+ " " + suffix)
