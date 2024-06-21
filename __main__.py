@@ -4,6 +4,7 @@ import systeminfo
 import apikey
 import time
 import asyncio
+import importantServices
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -45,7 +46,7 @@ async def on_message(message):
 
     if message.content == "status":
         await message.channel.send('CPU freq: ' + systeminfo.getCPUFreq() + '\nCPU usage: ' + systeminfo.getCPUUsage() + '\nRAM%: ' + systeminfo.getRAMUsage() + '\nUptime: ' + systeminfo.getUptime_Days())
-        statuses = systeminfo.getStatus(["sshd", "tailscaled", "fwupd"])
+        statuses = systeminfo.getStatus(importantServices.services())
         statusString = ''
         for status in statuses:
             statusString = statusString + "\n" + status
