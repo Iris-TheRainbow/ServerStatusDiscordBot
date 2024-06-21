@@ -37,7 +37,7 @@ async def on_message(message):
         memPercent = str(psutil.virtual_memory()[2])
         with open('/proc/uptime', 'r') as f:
             uptime = str(float(f.readline().split()[0])/86400)
-        await message.channel.send('This is real data\n CPU freq: ' + freq + '\n CPU usage: ' + usage + '\n RAM%: ' + memPercent + '\n Uptime: ' + uptime)
+        await message.channel.send('CPU freq: ' + freq + '\n CPU usage: ' + usage + '\n RAM%: ' + memPercent + '\n Uptime: ' + uptime)
     
     if message.content == "bot status":
         f = open("uptime", "r")
