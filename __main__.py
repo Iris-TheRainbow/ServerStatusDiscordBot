@@ -17,7 +17,13 @@ async def on_message(message):
         return
 
     if message.content == "Status":
-        await message.channel.send("This is an example status\n The server is: Ok\n CPU usage: " + str(psutil.cpu_percent(.5)) + "\n Cpu Freq: " + str(psutil.cpu_freq()[0]))
+        usage = str(psutil.cpu_percent(.25))
+        freq = str(psutil.cpu_freq()[0])
+        memPercent = str(psutil.virtual_memory()[2])
+        with open('/proc/uptime', 'r') as f:
+            uptime = str(float(f.readline().split()[0])/86400)
+        await message.channel.send('This is real data\n CPU freq: ' + freq + '\n CPU usage: ' + usage + '\n RAM%: ' + memPercent + '\n Uptime: ' + uptime)
+
 
 key = apikey.key()
 client.run(key)
