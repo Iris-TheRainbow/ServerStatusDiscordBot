@@ -16,8 +16,8 @@ async def periodic():
     channel = client.get_channel(1253632767842062348)
     while True:
         await asyncio.sleep(1)
-        f = open("uptime", "r")
-        shouldTrigger = f.readline()
+        f = open("trigger", "r")
+        shouldTrigger = bool(f.readline())
         f.close
         if shouldTrigger == True:
             try:
