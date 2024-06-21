@@ -1,5 +1,6 @@
 import discord
 import apikey
+import psutil
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -16,7 +17,7 @@ async def on_message(message):
         return
 
     if message.content == "Status":
-        await message.channel.send("This is an example status\n The server is: Ok\n Uptime is: 37 days")
+        await message.channel.send("This is an example status\n The server is: Ok\n CPU usage: " + str(psutil.cpu_percent(.5)) + "\n Cpu Freq: " + str(psutil.cpu_freq()[0]))
 
 key = apikey.key()
 client.run(key)
