@@ -18,12 +18,13 @@ async def periodic():
         await asyncio.sleep(1)
         f = open("trigger", "r")
         shouldTrigger = bool(f.readline())
-        f.close
         if shouldTrigger == True:
+            status = f.readline()
             try:
-                await channel.send("triggered")
+                await channel.send(status)
             except TypeError:
                 print('err')
+        f.close()
 
 @client.event
 async def on_ready():

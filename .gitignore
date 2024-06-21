@@ -2,3 +2,6 @@ apikey.py
 __pycache__
 uptime
 trigger
+hostname
+status
+tsstatus
