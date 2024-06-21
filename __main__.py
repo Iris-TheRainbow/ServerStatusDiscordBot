@@ -1,29 +1,41 @@
+from discord.ext import commands, tasks
 import discord
+
 import apikey
 import psutil
 import time
+import asyncio
 
 intents = discord.Intents.default()
 intents.message_content = True
 
 client = discord.Client(intents=intents)
 
-@client.event
-async def on_ready():
-    global channel
-    channel = client.get_channel('1253632767842062348')
-    print(f'We have logged in as {client.user}')
+async def periodic():
+    await client.wait_until_ready()
+    channel = client.get_channel(1253632767842062348)
+    while True:
+        await asyncio.sleep(1)
+        f = open("uptime", "r")
+        shouldTrigger = f.readline()
+        f.close
+        if shouldTrigger == True:
+            try:
+                await channel.send("triggered")
+            except TypeError:
+                print('err')
 
 @client.event
-async def on_connect():
+async def on_ready():
+    channel = client.get_channel(1253632767842062348)
+    await channel.send("connected")
+    print(f'We have logged in as {client.user}')
+    f = open("trigger", 'w')
+    f.close()
     f = open("uptime", "w")
     f.write(str(time.time_ns()))
     f.close()
-
-    try:
-        channel.send("Server Status Bot is back up")
-    except:
-        pass
+    client.loop.create_task(periodic())
 
 
 @client.event
@@ -38,7 +50,6 @@ async def on_message(message):
         with open('/proc/uptime', 'r') as f:
             uptime = str(float(f.readline().split()[0])/86400)
         await message.channel.send('CPU freq: ' + freq + '\n CPU usage: ' + usage + '\n RAM%: ' + memPercent + '\n Uptime: ' + uptime)
-    
     if message.content == "bot status":
         f = open("uptime", "r")
         startTime = f.readline()
