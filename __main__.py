@@ -7,31 +7,38 @@ import asyncio
 import importantServices
 import threading
 import errorWatch
+import os
 
 intents = discord.Intents.default()
 intents.message_content = True
+pingIris = '<@705965203807928381> '
+if os.path.exists('disconnecttime'):
+    os.remove('disconnecttime')
 
 client = discord.Client(intents=intents)
 
-async def periodic(channel):
+async def periodic():
     await client.wait_until_ready()
+    global sent
     sent = 0
     while True:
         await asyncio.sleep(1)
-        f = open("trigger", "r")
-        shouldTrigger = bool(f.readline())
-        if shouldTrigger == True:
-            status = f.readline()
-            try:
-                await channel.send(status)
-                sent +=1
-                open("trigger", "w").close()
-            except TypeError:
-                print('err')
-        f.close()
+        if sent < 3:
+            f = open("trigger", "r")
+            shouldTrigger = bool(f.readline())
+            if shouldTrigger == True:
+                status = f.readline()
+                try:
+                    await channel.send('<@705965203807928381> ' + status)
+                    sent +=1
+                    open("trigger", "w").close()
+                except TypeError:
+                    print('err')
+            f.close()
 
 @client.event
 async def on_ready():
+    global channel
     channel = client.get_channel(1253632767842062348)
     await channel.send("connected")
     print(f'We have logged in as {client.user}')
@@ -40,7 +47,30 @@ async def on_ready():
     f = open("uptime", "w")
     f.write(str(time.time_ns()))
     f.close()
-    client.loop.create_task(periodic(channel))
+    client.loop.create_task(periodic())
+    if os.path.exists('disconnecttime'):
+        with open('disconnecttime') as f:
+            downTime = f.readline()
+            downTime = ((time.time_ns() - int(downTime))/60000000000)
+            suffix = " minutes"
+            if downtime > 60: 
+                downtime = downtime / 60
+                suffix = " hours"
+            if downtime > 1440:
+                downtime = downtime / 1440
+                suffix = ' days'
+            await channel.send(pingIris + 'your server was disconnected for ' + str(downtime) + suffix)
+            os.remove('disconnecttime')            
+
+@client.event
+async def on_disconnect():
+    print('logged downtime')
+    if not os.path.exists('disconnecttime'):
+        with open('disconnecttime', 'w') as f:
+            f.write(str(time.time_ns()))
+            f.close()
+
+@client.event
 
 
 @client.event

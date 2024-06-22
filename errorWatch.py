@@ -3,6 +3,7 @@ import importantServices
 import os
 def watchdog():
     while True:
+        time.sleep(60)
         inactives = []
         inactive = False
         message = ''
