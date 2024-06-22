@@ -142,7 +142,7 @@ async def on_message(message):
         if message.content.split(' ')[0] != '$login':   
             if auth.authorize():
                 print(message.content[1:])
-                rsp = pybash.shell( message.content[1:])
+                rsp = await pybash.shell( message.content[1:])
                 await channel.send('```' + rsp + '```')
             else:
                 await channel.send("Please first log in `$login psswd`")

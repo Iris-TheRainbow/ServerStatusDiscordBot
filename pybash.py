@@ -1,7 +1,7 @@
 import subprocess
-import os, time
+import os, time, asyncio
 
-def shell(command):
+async def shell(command):
     if command == "help":
         return "discbash: a simple shell written in Python for discord"
     else:
@@ -32,7 +32,7 @@ def shell(command):
                     except Exception:
                         continue
                 try:
-                    subprocess.run(cmd.strip().split(), capture_output=True)
+                    asyncio.subprocess.run(cmd.strip().split(), capture_output=True)
                     return 
                 except Exception:
                     return "psh: command not found: " + cmd.strip()
@@ -49,14 +49,12 @@ def shell(command):
                 return
             except Exception:
                 return "cd: no such file or directory: " + path
-        process = subprocess.Popen(command.split(' '),
-    stdout=subprocess.PIPE,
-    stderr=subprocess.PIPE)
-        stdoutdata,stderrdata=process.communicate()
-        return stdoutdata.decode('utf-8')
-        return "psh: command not found: " + command
-
-if __name__ == '__main__':    
-    while True:
-        command = input("$ ")
-        print(shell(command))
+        try:
+            process = await asyncio.create_subprocess_exec(command,
+                stdout=subprocess.PIPE)
+            stdout = await process.communicate()
+            print(stdout)
+            out = stdout[0].decode().strip()
+            return out
+        except:
+            return "psh: command not found: " + command
