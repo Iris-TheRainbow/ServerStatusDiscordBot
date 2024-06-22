@@ -10,6 +10,7 @@ import errorWatch
 import os
 import authy
 import random,string
+import pybash
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -138,24 +139,16 @@ async def on_message(message):
         uptime = round(uptime, 1)
         await message.channel.send('Bot has been up for: ' + str(uptime)+ " " + suffix)
     if message.content.lower()[0] == '$':
-        if message.content[:6] != '$login':   
+        if message.content.split(' ')[0] != '$login':   
             if auth.authorize():
-                if message.content == '$cd ..'
-
-                os.system(message.content[1:] + "> results")
-                string = ''
-                with open("results") as f:
-                    for line in f.readlines():
-                        string += line
-                try:
-                    await channel.send(string)
-                except:
-                    pass
+                print(message.content[1:])
+                rsp = pybash.shell( message.content[1:])
+                await channel.send('```' + rsp + '```')
             else:
                 await channel.send("Please first log in `$login psswd`")
-    if message.content[:6] == '$login':
+    if message.content.split(' ')[0] == '$login':
         if not auth.authorize():
-            success = auth.login(message.content[7:])
+            success = auth.login(message.content.split(' ')[1])
             if success:
                 await channel.send("shell authorized!")
                 print(auth.authorize())

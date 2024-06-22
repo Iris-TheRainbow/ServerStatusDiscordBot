@@ -9,7 +9,7 @@ class authy:
         return self.authorized
 
     def login(self, password):
-        if password == self.psswd:
+        if password == apikey.psswd():
             self.authorized = True
         return self.authorized
     
