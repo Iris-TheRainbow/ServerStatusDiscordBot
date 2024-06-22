@@ -15,6 +15,7 @@ client = discord.Client(intents=intents)
 
 async def periodic(channel):
     await client.wait_until_ready()
+    sent = 0
     while True:
         await asyncio.sleep(1)
         f = open("trigger", "r")
@@ -23,6 +24,8 @@ async def periodic(channel):
             status = f.readline()
             try:
                 await channel.send(status)
+                sent +=1
+                open("trigger", "w").close()
             except TypeError:
                 print('err')
         f.close()
@@ -45,14 +48,15 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    if message.content == "status":
+    if message.content.lower() == "status":
         await message.channel.send('CPU freq: ' + systeminfo.getCPUFreq() + '\nCPU usage: ' + systeminfo.getCPUUsage() + '\nRAM%: ' + systeminfo.getRAMUsage() + '\nUptime: ' + systeminfo.getUptime_Days())
         statuses = systeminfo.getStatus(importantServices.services())
         statusString = ''
         for status in statuses:
             statusString = statusString + "\n" + status
         await message.channel.send(statusString)
-    if message.content == "bot status":
+
+    if message.content.lower() == "bot status":
         f = open("uptime", "r")
         startTime = f.readline()
         f.close
