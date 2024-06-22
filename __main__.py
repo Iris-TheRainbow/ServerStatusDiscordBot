@@ -50,8 +50,8 @@ async def on_ready():
     client.loop.create_task(periodic())
     if os.path.exists('disconnecttime'):
         with open('disconnecttime') as f:
-            downTime = f.readline()
-            downTime = ((time.time_ns() - int(downTime))/60000000000)
+            downtime = f.readline()
+            downtime = ((time.time_ns() - int(downtime))/60000000000)
             suffix = " minutes"
             if downtime > 60: 
                 downtime = downtime / 60
@@ -59,6 +59,7 @@ async def on_ready():
             if downtime > 1440:
                 downtime = downtime / 1440
                 suffix = ' days'
+            downtime = round(downtime, 1)
             await channel.send(pingIris + 'your server was disconnected for ' + str(downtime) + suffix)
             os.remove('disconnecttime')            
 
@@ -71,7 +72,38 @@ async def on_disconnect():
             f.close()
 
 @client.event
+async def on_shard_resumed():
+    if os.path.exists('disconnecttime'):
+        with open('disconnecttime') as f:
+            downtime = f.readline()
+            downtime = ((time.time_ns() - int(downtime))/60000000000)
+            suffix = " minutes"
+            if downtime > 60: 
+                downtime = downtime / 60
+                suffix = " hours"
+            if downtime > 1440:
+                downtime = downtime / 1440
+                suffix = ' days'
+            downtime = round(downtime, 1)
+            await channel.send(pingIris + 'your server was disconnected for ' + str(downtime) + suffix)
+            os.remove('disconnecttime') 
 
+@client.event
+async def on_resumed():
+    if os.path.exists('disconnecttime'):
+        with open('disconnecttime') as f:
+            downtime = f.readline()
+            downtime = ((time.time_ns() - int(downtime))/60000000000)
+            suffix = " minutes"
+            if downtime > 60: 
+                downtime = downtime / 60
+                suffix = " hours"
+            if downtime > 1440:
+                downtime = downtime / 1440
+                suffix = ' days'
+
+            await channel.send(pingIris + 'your server was disconnected for ' + str(downtime) + suffix)
+            os.remove('disconnecttime') 
 
 @client.event
 async def on_message(message):
@@ -98,6 +130,7 @@ async def on_message(message):
         if uptime > 1440:
             uptime = uptime / 1440
             suffix = 'days'
+        uptime = round(uptime, 1)
         await message.channel.send('Bot has been up for: ' + str(uptime)+ " " + suffix)
 
 watchdog = threading.Thread(target=errorWatch.watchdog)

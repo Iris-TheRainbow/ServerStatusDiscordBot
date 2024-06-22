@@ -13,7 +13,7 @@ def watchdog():
             with open('active', "r") as f:
                 active = f.readline()
                 f.close()
-            if 'inactive' in active:
+            if 'running' not in active:
                 inactives.append(service)
                 inactive = True
         if inactive:
