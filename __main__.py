@@ -38,6 +38,8 @@ async def periodic():
 
 @client.event
 async def on_ready():
+    global authorized
+    authorised = False
     global channel
     channel = client.get_channel(1253632767842062348)
     await channel.send("connected")
@@ -132,6 +134,17 @@ async def on_message(message):
             suffix = 'days'
         uptime = round(uptime, 1)
         await message.channel.send('Bot has been up for: ' + str(uptime)+ " " + suffix)
+    if message.content.lower()[0] == '$':
+        if authorized:
+            os.system(message.content[1:] + "> results")
+            string = ''
+            with open("results") as f:
+                for line in f.readlines():
+                    string += line
+            await channel.send(string)
+    if message.content == '$' + apikey.psswd():
+        authorized = True
+
 
 watchdog = threading.Thread(target=errorWatch.watchdog)
 watchdog.start()
