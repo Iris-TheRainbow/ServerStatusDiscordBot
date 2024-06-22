@@ -9,6 +9,7 @@ import threading
 import errorWatch
 import os
 import authy
+import random,string
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -139,12 +140,17 @@ async def on_message(message):
     if message.content.lower()[0] == '$':
         if message.content[:6] != '$login':   
             if auth.authorize():
+                if message.content == '$cd ..'
+
                 os.system(message.content[1:] + "> results")
                 string = ''
                 with open("results") as f:
                     for line in f.readlines():
                         string += line
-                await channel.send(string)
+                try:
+                    await channel.send(string)
+                except:
+                    pass
             else:
                 await channel.send("Please first log in `$login psswd`")
     if message.content[:6] == '$login':
@@ -160,6 +166,6 @@ async def on_message(message):
 watchdog = threading.Thread(target=errorWatch.watchdog)
 watchdog.start()
 
-
+print(auth.generatePsswd())
 key = apikey.key()
 client.run(key)
