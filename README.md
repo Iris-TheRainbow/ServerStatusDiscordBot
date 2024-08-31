@@ -17,3 +17,5 @@ You can run any command that doesnt need any user input (like `mkdir`) with `$` 
 send a message that is just `bot status` in any channel.
 ### Server status
 send a message that is just `status` in any channel
+
+![image](https://github.com/user-attachments/assets/76892c51-8fc6-409b-863e-4ce29a06fb52)
