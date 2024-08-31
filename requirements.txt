@@ -1,0 +1,6 @@
+apikey==0.2.4
+discord.py==2.4.0
+google_api_python_client==2.143.0
+httplib2==0.22.0
+oauth2client==4.1.3
+psutil==6.0.0
